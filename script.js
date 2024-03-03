@@ -1,78 +1,105 @@
-function getComputerChoice() {
-    let computerChoice = Math.floor(Math.random() * 3);
-    if (computerChoice == 0) {
+function getOpponentChoice() {
+    let opponentChoice = Math.floor(Math.random() * 3);
+    let opponentChoiceImg = document.querySelector("#opponent-choice img");
+    if (opponentChoice == 0) {
+        opponentChoiceImg.src = "./images/rock.png";
         return "rock";
-    } else if (computerChoice == 1) {
+    } else if (opponentChoice == 1) {
+        opponentChoiceImg.src = "./images/paper.png";
         return "paper";
     } else {
+        opponentChoiceImg.src = "./images/scissors.png";
         return "scissors";
     }
+
+    
 }
 
 function getPlayerChoice() {
     const choices = ["rock", "paper", "scissors"];
 
-    let playerSelection = prompt("Rock, paper, or scissors?");
+    let playerChoice = prompt("Rock, paper, or scissors?");
     let i=0;
 
-    while (i < 3 && (playerSelection == null || !choices.includes(playerSelection.toLowerCase()))) {
+    while (i < 3 && (playerChoice == null || !choices.includes(playerChoice.toLowerCase()))) {
         i++;
-        playerSelection = prompt("Invalid input. Please enter rock, paper, or scissors.");
+        playerChoice = prompt("Invalid input. Please enter rock, paper, or scissors.");
     }
 
     if (i == 3) {
         return null;
     }
 
-    return playerSelection;
+    return playerChoice;
 }
 
-function playRound() {
+function playRound(playerChoice) {
     // your code here!
-    let playerSelection = getPlayerChoice();
-    let computerSelection = getComputerChoice();
+    let opponentChoice = getOpponentChoice();
+    let resultElement = document.querySelector("#result");
 
-    if (playerSelection == null) {
-        return "lose";    
+    if (playerChoice == null) {
+        updateScore("lose");    
+        resultElement.textContent = "You forfeit!";
     }
 
-    if (playerSelection === computerSelection) {
-        return "tie";
+    if (playerChoice === opponentChoice) {
+        updateScore("tie");
+        resultElement.textContent = "Tie!";
+        
     } else if (
-        (playerSelection === "rock" && computerSelection === "scissors") ||
-        (playerSelection === "paper" && computerSelection === "rock") ||
-        (playerSelection === "scissors" && computerSelection === "paper")
+        (playerChoice === "rock" && opponentChoice === "scissors") ||
+        (playerChoice === "paper" && opponentChoice === "rock") ||
+        (playerChoice === "scissors" && opponentChoice === "paper")
     ) {
-        return "win";
+        updateScore("win");
+        resultElement.textContent = "You Win!";
     } else {
-        return "lose";
+        updateScore("lose");
+        resultElement.textContent = "You Lose!";
     }
   }
 
-
-function playGame(){
-    let playerScore = 0;
-    let computerScore = 0;
-
-    for (let i = 0; i < 5; i++) {
-        let result = playRound();
-
-        if (result == "win"){
-            console.log("You win!");
-            playerScore++;
-        } else if (result == "lose") {
-            console.log("You lose!");
-            computerScore++;
-        } else {
-            console.log("Tie!");
-        }
+function updateScore(result) {
+    if (result == "win") {
+        playerScore++;
+    } else if (result == "lose") {
+        computerScore++;     
     }
-
-    if (playerScore > computerScore) {
-        console.log("You win the game!");
-    } else if (playerScore < computerScore) {
-        console.log("You lose the game!");
-    } else {
-        console.log("The game is a tie!");
-    }
+    document.querySelector("header div").textContent = `Score: ${playerScore} - ${computerScore}`;
 }
+
+let buttons = document.querySelector("#buttons");
+let playerScore = 0;
+let computerScore = 0;
+let result = document.querySelector("#result");
+
+buttons.addEventListener("click", (e) => {
+    let imgSrc = "";
+    let targetElement = e.target;
+
+    if (targetElement.tagName != "BUTTON") {
+        targetElement = targetElement.closest("button");
+    }
+
+    if (targetElement == null) {
+        return;
+    }
+
+    switch(targetElement.id) {
+        case "rock":
+            imgSrc = "./images/rock.png";
+            break;
+        case "paper":
+            imgSrc = "./images/paper.png";
+            break;
+        case "scissors":
+            imgSrc = "./images/scissors.png";
+            break;
+    }
+
+    let playerChoiceImg = document.querySelector("#player-choice img");
+    playerChoiceImg.src = imgSrc;
+    playRound(targetElement.id);
+});
+
