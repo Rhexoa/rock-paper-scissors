@@ -36,16 +36,13 @@ function getPlayerChoice() {
 function playRound(playerChoice) {
     // your code here!
     let opponentChoice = getOpponentChoice();
-    let resultElement = document.querySelector("#result");
 
     if (playerChoice == null) {
         updateScore("lose");    
-        resultElement.textContent = "You forfeit!";
     }
 
     if (playerChoice === opponentChoice) {
         updateScore("tie");
-        resultElement.textContent = "Tie!";
         
     } else if (
         (playerChoice === "rock" && opponentChoice === "scissors") ||
@@ -53,10 +50,8 @@ function playRound(playerChoice) {
         (playerChoice === "scissors" && opponentChoice === "paper")
     ) {
         updateScore("win");
-        resultElement.textContent = "You Win!";
     } else {
         updateScore("lose");
-        resultElement.textContent = "You Lose!";
     }
   }
 
@@ -67,6 +62,19 @@ function updateScore(result) {
         computerScore++;     
     }
     document.querySelector("header div").textContent = `Score: ${playerScore} - ${computerScore}`;
+
+    let resultElement = document.querySelector("#result");
+    if (playerScore == 5){
+        resultElement.textContent = "You Win!";
+        playerScore = 0;
+        computerScore = 0;
+    } else if(computerScore == 5) {
+        resultElement.textContent = "You Lose!";
+        playerScore = 0;
+        computerScore = 0;
+    } else {
+        resultElement.textContent = "";
+    }
 }
 
 let buttons = document.querySelector("#buttons");
